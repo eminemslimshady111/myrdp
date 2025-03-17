@@ -1,0 +1,27 @@
+name: Free RDP 6H
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Install Playit tunnel
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/playit-cloud/playit-agent/releases/download/v0.15.26/playit-windows-x86_64-signed.exe" -OutFile "$env:USERPROFILE\playit.exe"
+        Start-Sleep -s 5
+
+    - name: Enable RDP
+      run: |
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "LOFTI" -Force)
+
+    - name: Start Tunnel
+      env:
+        PLAYIT_AUTH_KEY: ${{ secrets.PLAYIT_KEY }}
+      run: |
+        Start-Process "$env:USERPROFILE\playit.exe" -ArgumentList "--secret $env:PLAYIT_AUTH_KEY"
+        Start-Sleep -s 18000  # 5 ساعات
