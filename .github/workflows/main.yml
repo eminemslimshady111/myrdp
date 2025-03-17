@@ -17,7 +17,7 @@ jobs:
       run: |
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "LOFTI" -Force)
+        Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "ad3mforthewin" -Force)
 
     - name: Start Tunnel
       env:
